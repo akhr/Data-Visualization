@@ -114,6 +114,7 @@ function addPathGeneratorToGraph() {
         .attr("class", "area");
 }
 
+
 function generateMockChartData() {
     var dataPoint = {};
     dataPoint.total = Math.round(Math.random() * 40 + 10);;
