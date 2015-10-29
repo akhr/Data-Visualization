@@ -5,16 +5,20 @@ var margin = {
     left: 30
 };
 
+var axisLabelSpace = 40;
+
 var chartMode;
 var width;
 var height;
 var datasetLength = 180;
 var dataset;
 var xScale;
+var xScale_1;
 var yScale;
 var xAxis;
 var yAxis;
 var area;
+var canvas;
 var graph;
 var path;
 var interpolationType = "linear";
@@ -23,21 +27,22 @@ var transitionDelay = 500;
 function prepareChart(mode, parentWidth, parentHeight) {
     this.chartMode = mode;
     defineChartDimension(parentWidth, parentHeight);
+    defineSvgCanvas();
     this.dataset = generateInitChartData();
     defineGraph();
     defineScaling();
     defineAxes();
     defineAreaPathGenerator();
+    addAxisLabels();
     addAxisToGraph();
     addPathGeneratorToGraph();
-    generateMockChartData();
+
+    generateMockChartData(); 
 }
 
 function defineChartDimension(parentWidth, parentHeight) {
-    var chartAreaWidth = parentWidth - 20;
-    var ChartAreaHeight = parentHeight - 20;
-    width = chartAreaWidth - margin["left"] - margin["right"];
-    height = ChartAreaHeight - margin["top"] - margin["bottom"];
+    width = parentWidth - margin["left"] - margin["right"];
+    height = parentHeight - margin["top"] - margin["bottom"];
 }
 
 function generateInitChartData() {
@@ -54,15 +59,23 @@ function generateInitChartData() {
 }
 
 function defineScaling() {
+    defineXAxisScaling();
+    defineYAxisScaling();
+}
+
+function defineXAxisScaling() {
     xScale = d3.scale.linear()
         .domain([0, dataset.length])
         .range([0, width]);
+}
 
+function defineYAxisScaling() {
     yScale = d3.scale.linear()
         .domain(d3.extent(dataset, function(d) {
             return d.throughput;
         }))
         .range([height, 0]);
+
 }
 
 function defineAxes() {
@@ -73,24 +86,36 @@ function defineAxes() {
 function defineXAxis() {
     xAxis = d3.svg.axis()
         .scale(xScale)
-        .tickFormat(function(d, i){
-            console.log("X axis tick formatting called - i ="+i);
-            if(d == 60)
+        .tickFormat(function(d, i) {
+            console.log("X axis tick formatting called - i =" + i);
+            if (d == 60)
                 return "2mins ago";
-            else if(d == 120)
+            else if (d == 120)
                 return "1min ago";
             else
                 null;
         })
+        .tickSize(-height, 0, 0)
+        .tickSubdivide(true)
+        .orient("bottom")
+        .tickPadding(10);
+}
+
+/*function defineXAxis() {
+    xAxis = d3.svg.axis()
+        .scale(xScale)
+        .tickValues(["2min", "1min"])
         .tickSubdivide(false)
         .orient("bottom");
-}
+}*/
 
 function defineYAxis() {
     yAxis = d3.svg.axis()
         .scale(yScale)
         .ticks(6)
-        .orient("left");
+        .tickSize(-width, 0, 0)
+        .orient("left")
+        .tickPadding(10);
 
 }
 
@@ -110,21 +135,39 @@ function defineAreaPathGenerator() {
         .interpolate(interpolationType);
 }
 
-function defineGraph() {
-    graph = d3.select("#inboundChart")
+function defineSvgCanvas() {
+    canvas = d3.select("#inboundChart")
         .append("svg:svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("svg:g")
-        .attr("transform", "translate(" + (margin["left"]) + "," + margin["top"] + ")")
-        .style("fill", "blue");
+        .attr("width", width + margin.left + margin.right + axisLabelSpace)
+        .attr("height", height + margin.top + margin.bottom + axisLabelSpace);
+}
+
+function defineGraph() {
+    var graphXPos = margin["left"] + axisLabelSpace;
+    var graphYPos = margin["top"];
+
+    graph = canvas.append("svg:g")
+        .attr("transform", "translate(" + graphXPos + "," + graphYPos + ")")
+}
+
+function addAxisLabels() {
+    canvas.append("text")
+        .attr("x", 20)
+        .attr("y", (height / 2))
+        .style("writing-mode", "tb")
+        .text("Throughput");
+
+    canvas.append("text")
+        .attr("x", ((width / 2) + axisLabelSpace))
+        .attr("y", (height + axisLabelSpace * 2))
+        .text("Time");
 }
 
 
 function addAxisToGraph() {
     graph.append("svg:g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + (height) + ")")
         .call(xAxis);
 
     graph.append("svg:g")
@@ -156,9 +199,10 @@ function generateMockChartData() {
     var dataPoint = {};
     dataPoint.total = Math.round(Math.random() * 40 + 10);
     dataPoint.compression = Math.round(Math.random() * 40 + 10);
-    var min = 0;
-    var max = 400;
-    dataPoint.throughput = Math.round(Math.random() * (max - min) + min);
+    dataPoint.throughput = Math.round(Math.random() * 40 + 10);
+    // var min = 0;
+    // var max = 100;
+    // dataPoint.throughput = Math.round(Math.random() * (max - min) + min);
     console.log("Generated Throughput : " + dataPoint.throughput);
     this.pushDataPoint(dataPoint);
     setTimeout(function() {

@@ -1,6 +1,5 @@
     /* tell the SVG path to be a thin blue line without any area fill */
-    
-    path {
+    /*    path {
         stroke: steelblue;
         stroke-width: 1;
         fill: none;
@@ -9,8 +8,8 @@
     .axis {
         shape-rendering: crispEdges;
     }
-
-    .area{
+    
+    .area {
         fill: steelblue;
     }
     
@@ -24,11 +23,42 @@
     
     .x.axis path {
         /*fill:blue;
-        stroke:red;*/
+        stroke:red;
     }
     
     .y.axis line,
     .y.axis path {
         fill: none;
         stroke: #000;
+    }
+    
+    .grid .tick {
+        stroke: lightgrey;
+        opacity: 0.7;
+    }
+    
+    .grid path {
+        stroke-width: 0;
+    }*/
+    
+    .axis path {
+        shape-rendering: crispEdges;
+        fill: none;
+    }
+    
+    .axis line {
+        shape-rendering: crispEdges;
+        fill: none;
+        stroke: lightgrey;
+        stroke-width: 1px;
+    }
+
+    .axis text{
+        shape-rendering: crispEdges;
+        font-size: 12px;
+        fill: grey;
+    }
+    
+    .area {
+        fill: steelblue;
     }
