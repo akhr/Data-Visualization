@@ -21,7 +21,7 @@ var area;
 var canvas;
 var graph;
 var path;
-var interpolationType = "linear";
+var interpolationType = "basis";
 var transitionDelay = 500;
 
 function prepareChart(mode, parentWidth, parentHeight) {
@@ -34,10 +34,11 @@ function prepareChart(mode, parentWidth, parentHeight) {
     defineAxes();
     defineAreaPathGenerator();
     addAxisLabels();
-    addAxisToGraph();
+    addAxesToGraph();
+    filterYAxisTicks();
     addPathGeneratorToGraph();
 
-    generateMockChartData(); 
+    generateMockChartData();
 }
 
 function defineChartDimension(parentWidth, parentHeight) {
@@ -70,11 +71,15 @@ function defineXAxisScaling() {
 }
 
 function defineYAxisScaling() {
-    yScale = d3.scale.linear()
-        .domain(d3.extent(dataset, function(d) {
-            return d.throughput;
-        }))
+    yScale = d3.scale.log()
+        .domain([1, 1000000000])
         .range([height, 0]);
+
+    /*yScale = d3.scale.log()
+    .domain(d3.extent(dataset, function(d) {
+        return d.throughput;
+    }))
+    .range([height, 0]);*/
 
 }
 
@@ -87,11 +92,12 @@ function defineXAxis() {
     xAxis = d3.svg.axis()
         .scale(xScale)
         .tickFormat(function(d, i) {
-            console.log("X axis tick formatting called - i =" + i);
             if (d == 60)
-                return "2mins ago";
+                return "2 mins ago";
             else if (d == 120)
-                return "1min ago";
+                return "1 min ago";
+            else if (d == 180)
+                return "current";
             else
                 null;
         })
@@ -99,6 +105,11 @@ function defineXAxis() {
         .tickSubdivide(true)
         .orient("bottom")
         .tickPadding(10);
+}
+
+
+function defineXAxisTickSize(d, i) {
+
 }
 
 /*function defineXAxis() {
@@ -112,24 +123,42 @@ function defineXAxis() {
 function defineYAxis() {
     yAxis = d3.svg.axis()
         .scale(yScale)
-        .ticks(6)
-        .tickSize(-width, 0, 0)
+        .tickFormat(function(d, i) {
+            // console.log("Y axis tick formatting called - i =" + i + "-- d=" + d);
+            if (d == 10)
+                return "10b";
+            else if (d == 100)
+                return "100b";
+            else if (d == 1000)
+                return "1Kb";
+            else if (d == 10000)
+                return "10Kb";
+            else if (d == 100000)
+                return "100Kb";
+            else if (d == 1000000)
+                return "1Mb";
+            else if (d == 10000000)
+                return "10Mb";
+            else if (d == 100000000)
+                return "100Mb";
+            else
+                return "";
+        })
         .orient("left")
-        .tickPadding(10);
+        .tickPadding(10)
+        .tickSize(-width, 0, 0);
 
 }
 
 function defineAreaPathGenerator() {
     area = d3.svg.area()
         .x(function(d, i) {
-            // console.log('Plotting X value for data point: ' + d.throughput + ' using index: ' + i + ' to be at: ' + xScale(i) + ' using our xScale.');
             return xScale(i);
         })
         .y0(function(d) {
             return height;
         })
         .y1(function(d) {
-            // console.log('Plotting Y value for data point: ' + d.throughput + ' to be at: ' + yScale(d.throughput) + " using our yScale.");
             return yScale(d.throughput);
         })
         .interpolate(interpolationType);
@@ -152,19 +181,21 @@ function defineGraph() {
 
 function addAxisLabels() {
     canvas.append("text")
-        .attr("x", 20)
+        .attr("x", 15)
         .attr("y", (height / 2))
         .style("writing-mode", "tb")
-        .text("Throughput");
+        .text("Throughput")
+        .attr("class", "text");
 
     canvas.append("text")
         .attr("x", ((width / 2) + axisLabelSpace))
         .attr("y", (height + axisLabelSpace * 2))
-        .text("Time");
+        .text("Time")
+        .attr("class", "text");
 }
 
 
-function addAxisToGraph() {
+function addAxesToGraph() {
     graph.append("svg:g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + (height) + ")")
@@ -173,7 +204,7 @@ function addAxisToGraph() {
     graph.append("svg:g")
         .attr("class", "y axis")
         .attr("transform", "translate(0,0)")
-        .call(yAxis);
+        .call(yAxis)
 }
 
 function addPathGeneratorToGraph() {
@@ -188,26 +219,26 @@ var loopCounter = 0;
 function generateMockChartData() {
     // console.log("generateMockChartData() called");
 
-    /*if (loopCounter >= 5) {
-        console.log("Exiting mock data generation");
-        printDataset(dataset);
-        redrawChart()
-        return;
-    }*/
-
     loopCounter++;
     var dataPoint = {};
     dataPoint.total = Math.round(Math.random() * 40 + 10);
     dataPoint.compression = Math.round(Math.random() * 40 + 10);
-    dataPoint.throughput = Math.round(Math.random() * 40 + 10);
-    // var min = 0;
-    // var max = 100;
-    // dataPoint.throughput = Math.round(Math.random() * (max - min) + min);
-    console.log("Generated Throughput : " + dataPoint.throughput);
+    // dataPoint.throughput = Math.round(Math.random() * 40 + 10);
+    var min = 0;
+    var max = 100000000;
+    if (loopCounter == 5) {
+        dataPoint.throughput = 120;
+    } else if (loopCounter == 10) {
+        dataPoint.throughput = 1980;
+    } else if (loopCounter == 18) {
+        dataPoint.throughput = 19;
+    } else
+        dataPoint.throughput = Math.round(Math.random() * (max - min) + min);
+    // console.log("Generated Throughput : " + dataPoint.throughput);
     this.pushDataPoint(dataPoint);
     setTimeout(function() {
         generateMockChartData();
-    }, 1000);
+    }, 100);
 }
 
 function pushDataPoint(dataPoint) {
@@ -224,11 +255,11 @@ function pushDataPoint(dataPoint) {
 }
 
 function redrawChart() {
-    console.log("redrawChart() called");
-    defineScaling();
-    defineYAxis()
-    graph.selectAll(".y.axis")
-        .call(yAxis);
+    // console.log("redrawChart() called");
+    /*  defineScaling();
+        defineYAxis()
+        graph.selectAll(".y.axis")
+            .call(yAxis);*/
 
     path
         .data([dataset])
@@ -246,6 +277,10 @@ function printDataset(dataArray) {
         console.log("i=" + i + " " + dataArray[i].throughput);
     }
     console.log("DONE Printing DATASET");
+}
+
+function powerOfTen(d) {
+    return d / Math.pow(10, Math.ceil(Math.log(d) / Math.LN10 - 1e-12)) === 1;
 }
 
 
