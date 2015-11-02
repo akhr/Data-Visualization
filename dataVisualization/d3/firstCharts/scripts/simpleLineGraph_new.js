@@ -35,7 +35,6 @@ function prepareChart(mode, parentWidth, parentHeight) {
     defineAreaPathGenerator();
     addAxisLabels();
     addAxesToGraph();
-    filterYAxisTicks();
     addPathGeneratorToGraph();
 
     generateMockChartData();
@@ -52,7 +51,8 @@ function generateInitChartData() {
         var dataPoint = {};
         dataPoint.total = 0;
         dataPoint.compression = 0;
-        dataPoint.throughput = Math.round(Math.random() * 40 + 10);
+        dataPoint.throughput = 1;
+        // dataPoint.throughput = Math.round(Math.random() * 40 + 10);
         initDataArray.push(dataPoint);
     }
     printDataset(initDataArray)
@@ -105,11 +105,6 @@ function defineXAxis() {
         .tickSubdivide(true)
         .orient("bottom")
         .tickPadding(10);
-}
-
-
-function defineXAxisTickSize(d, i) {
-
 }
 
 /*function defineXAxis() {
