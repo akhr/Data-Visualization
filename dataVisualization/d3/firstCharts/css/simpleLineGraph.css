@@ -14,10 +14,12 @@
         shape-rendering: crispEdges;
         font-size: 12px;
         fill: grey;
-    }
+    } 
     
     .area {
         fill: steelblue;
+        stroke: steelblue;
+        stroke-width: 2px;
         opacity: 0.3;
     }
     
