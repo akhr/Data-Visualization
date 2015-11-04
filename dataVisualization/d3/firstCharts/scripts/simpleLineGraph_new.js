@@ -74,13 +74,6 @@ function defineYAxisScaling() {
     yScale = d3.scale.log()
         .domain([1, 1000000000])
         .range([height, 0]);
-
-    /*yScale = d3.scale.log()
-    .domain(d3.extent(dataset, function(d) {
-        return d.throughput;
-    }))
-    .range([height, 0]);*/
-
 }
 
 function defineAxes() {
@@ -91,12 +84,13 @@ function defineAxes() {
 function defineXAxis() {
     xAxis = d3.svg.axis()
         .scale(xScale)
+        .tickValues([0, 60, 120, 179])
         .tickFormat(function(d, i) {
             if (d == 60)
                 return "2 mins ago";
             else if (d == 120)
                 return "1 min ago";
-            else if (d == 180)
+            else if (d == 179)
                 return "current";
             else
                 null;
@@ -107,17 +101,13 @@ function defineXAxis() {
         .tickPadding(10);
 }
 
-/*function defineXAxis() {
-    xAxis = d3.svg.axis()
-        .scale(xScale)
-        .tickValues(["2min", "1min"])
-        .tickSubdivide(false)
-        .orient("bottom");
-}*/
-
 function defineYAxis() {
     yAxis = d3.svg.axis()
         .scale(yScale)
+        .orient("left")
+        .tickPadding(10)
+        .tickSize(-width + 3, 0, 0)
+        .tickValues([10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000])
         .tickFormat(function(d, i) {
             // console.log("Y axis tick formatting called - i =" + i + "-- d=" + d);
             if (d == 10)
@@ -138,11 +128,7 @@ function defineYAxis() {
                 return "100Mb";
             else
                 return "";
-        })
-        .orient("left")
-        .tickPadding(10)
-        .tickSize(-width, 0, 0);
-
+        });
 }
 
 function defineAreaPathGenerator() {
@@ -194,12 +180,18 @@ function addAxesToGraph() {
     graph.append("svg:g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + (height) + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end");
 
     graph.append("svg:g")
         .attr("class", "y axis")
         .attr("transform", "translate(0,0)")
         .call(yAxis)
+        .selectAll("text")
+        .style("text-anchor", "start")
+        .attr("transform", "translate(10,-6)");
+
 }
 
 function addPathGeneratorToGraph() {
@@ -212,8 +204,6 @@ function addPathGeneratorToGraph() {
 var loopCounter = 0;
 
 function generateMockChartData() {
-    // console.log("generateMockChartData() called");
-
     loopCounter++;
     var dataPoint = {};
     dataPoint.total = Math.round(Math.random() * 40 + 10);
@@ -233,7 +223,7 @@ function generateMockChartData() {
     this.pushDataPoint(dataPoint);
     setTimeout(function() {
         generateMockChartData();
-    }, 100);
+    }, 1000);
 }
 
 function pushDataPoint(dataPoint) {
