@@ -1,6 +1,8 @@
     .axis path {
         shape-rendering: crispEdges;
         fill: none;
+        stroke: lightgrey;
+        stroke-width: 1px;
     }
     
     .axis line {
@@ -14,13 +16,17 @@
         shape-rendering: crispEdges;
         font-size: 12px;
         fill: grey;
-    } 
+    }
     
     .area {
-        fill: steelblue;
-        stroke: steelblue;
+        fill: #E3E6FF;
+        opacity: 0.8;
+    }
+    
+    .line {
+        stroke: #767FDB;
         stroke-width: 2px;
-        opacity: 0.3;
+        opacity: 0.5;
     }
     
     .text {
