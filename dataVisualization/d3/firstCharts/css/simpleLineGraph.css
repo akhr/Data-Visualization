@@ -1,36 +1,42 @@
-    .axis path {
-        shape-rendering: crispEdges;
-        fill: none;
-        stroke: lightgrey;
-        stroke-width: 1px;
-    }
-    
-    .axis line {
-        shape-rendering: crispEdges;
-        fill: none;
-        stroke: lightgrey;
-        stroke-width: 1px;
-    }
-    
-    .axis text {
-        shape-rendering: crispEdges;
-        font-size: 12px;
-        fill: grey;
-    }
-    
-    .area {
-        fill: #E3E6FF;
-        opacity: 0.8;
-    }
-    
-    .line {
-        stroke: #767FDB;
-        stroke-width: 2px;
-        opacity: 0.5;
-    }
-    
-    .text {
-        shape-rendering: crispEdges;
-        font-size: 16px;
-        fill: grey;
-    }
+.axis path {
+    shape-rendering: crispEdges;
+    fill: none;
+    stroke: lightgrey;
+    stroke-width: 1px;
+}
+
+.axis line {
+    shape-rendering: crispEdges;
+    fill: none;
+    stroke: lightgrey;
+    stroke-width: 1px;
+}
+
+.axis text {
+    shape-rendering: crispEdges;
+    font-size: 12px;
+    fill: grey;
+}
+
+.area {
+    fill: #E3E6FF;
+    opacity: 0.8;
+    stroke: #767FDB;
+    stroke-width: 2px;
+}
+
+.text {
+    shape-rendering: crispEdges;
+    font-size: 16px;
+    fill: grey;
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+
+.grid path {
+    stroke-width: 0;
+}
