@@ -73,14 +73,14 @@
         .scale(xScale)
         .orient("bottom")
         .innerTickSize(-height)
-        .outerTickSize(0)
+        .outerTickSize(20)
         .tickPadding(10);
 
     var yAxis = d3.svg.axis()
         .scale(yScale)
         .orient("left")
-        .innerTickSize(-width)
-        .outerTickSize(0)
+        .innerTickSize(-width-20)
+        .outerTickSize(100)
         .tickPadding(10);
 
     var line = d3.svg.line()

@@ -1,14 +1,14 @@
 .axis path {
     shape-rendering: crispEdges;
     fill: none;
-    stroke: lightgrey;
+    stroke: grey;
     stroke-width: 1px;
 }
 
 .axis line {
     shape-rendering: crispEdges;
     fill: none;
-    stroke: lightgrey;
+    stroke: grey;
     stroke-width: 1px;
 }
 
@@ -28,15 +28,25 @@
 .text {
     shape-rendering: crispEdges;
     font-size: 16px;
-    fill: grey;
+    fill: black;
 }
 
-.grid .tick {
-    stroke: lightgrey;
-    stroke-opacity: 0.7;
+.xGrid .tick {
+    stroke: grey;
+    stroke-opacity: 0.4;
     shape-rendering: crispEdges;
 }
 
-.grid path {
+.xGrid path {
+    stroke-width: 0;
+}
+
+.yGrid .tick {
+    stroke: grey;
+    stroke-opacity: 0.4;
+    shape-rendering: crispEdges;
+}
+
+.yGrid path {
     stroke-width: 0;
 }
